@@ -5,9 +5,6 @@ import argparse
 import json
 from requests.compat import urljoin, quote_plus
 
-FROM_URL = 'http://localhost:9200'
-TO_URL = 'http://localhost:9201'
-
 def get_indexes(host):
     result = []
     response = requests.get(urljoin(host, '_cat/indices'), params={ 'v': '' })
@@ -111,7 +108,7 @@ if __name__ == '__main__':
         raise Exception('invalid url: {0}'.format(args.to_url))
 
     print('Getting index information ...')
-    indexes = get_indexes(FROM_URL)
+    indexes = get_indexes(args.from_url)
     indexdata = {}
 
     print('{0} indexes found.'.format(len(indexes)))
@@ -119,16 +116,16 @@ if __name__ == '__main__':
     for index in indexes:
         indexdata[index] = {}
         print('Getting settings for index {0} ...'.format(index))
-        indexdata[index]['settings'] = get_settings(FROM_URL, index)
+        indexdata[index]['settings'] = get_settings(args.from_url, index)
         print('Getting mappings for index {0} ...'.format(index))
-        indexdata[index]['mappings'] = get_mappings(FROM_URL, index)
+        indexdata[index]['mappings'] = get_mappings(args.from_url, index)
 
     for index in indexes:
         print('Creating index {0} ...'.format(index))
-        create_index(TO_URL, index, indexdata[index]['settings'], indexdata[index]['mappings'])
+        create_index(args.to_url, index, indexdata[index]['settings'], indexdata[index]['mappings'])
 
     print('Getting aliases ...')
-    aliases = get_aliases(FROM_URL)
+    aliases = get_aliases(args.from_url)
     for alias in aliases:
         print('Adding alias {0} -> {1}'.format(alias['alias'], alias['index']))
-        add_alias(TO_URL, alias['alias'], alias['index'])
+        add_alias(args.to_url, alias['alias'], alias['index'])
