@@ -18,17 +18,10 @@ Clone the repository.
 git clone https://github.com/crisvp/copy-cluster.git
 ```
 
-Set up a virtualenv:
+Set up a virtualenv and install the requirements:
 
 ```
-virtualenv -p python3 env
-source env/bin/activate
-```
-
-Install the requirements:
-
-```
-pip install -r requirements.txt
+pipenv install
 ```
 
 Verify she chooches:
